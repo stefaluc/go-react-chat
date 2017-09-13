@@ -7,7 +7,8 @@ import (
 )
 
 type JsonData struct {
-	Number int
+	Text string `json:"text"`
+	Client string `json:"client"`
 }
 
 var upgrader = websocket.Upgrader{
