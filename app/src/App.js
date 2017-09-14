@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 
+import Message from './components/Message';
 import './App.css';
 
 const socket = new WebSocket("ws://127.0.0.1:8081/ws");
@@ -17,25 +18,61 @@ class App extends Component {
     super(props);
 
     this.state = {
+      init: true,
+      participants: [],
       messages: [],
     };
 
-    this.buttonClick = this.buttonClick.bind(this);
+    this.participantSubmit = this.participantSubmit.bind(this);
+    this.textSubmit = this.textSubmit.bind(this);
   }
 
-  buttonClick() {
+  participantSubmit(e) {
+    e.preventDefault();
+    const input = document.getElementById("participant-form").value;
+    console.log(input);
+    if (input === "") {
+      return;
+    }
+
+    this.setState({
+      init: false,
+      participants: [
+        ...this.state.participants,
+        input,
+      ]
+    });
+  }
+
+  textSubmit(e) {
+    e.preventDefault();
+    const input = document.getElementById("text-entry-input").value;
+    if (input === "") {
+      return;
+    }
+
     socket.send(JSON.stringify({
-      text: "test",
+      text: input,
       client: "testClient",
+      timestamp: new Date().toLocaleTimeString(),
     }));
+
+    document.getElementById("text-entry-input").value = "";
   }
 
   componentDidMount() {
     socket.onmessage = (event) => {
-      const { text, client } = JSON.parse(event.data);
+      const { text, client, timestamp } = JSON.parse(event.data);
 
       this.setState({
-        messages: [...this.state.messages, text],
+        messages: [
+          ...this.state.messages,
+          {
+            text,
+            client,
+            timestamp,
+          }
+        ],
       });
     }
   }
@@ -44,23 +81,44 @@ class App extends Component {
     console.log(this.state);
     return (
       <div id="box-main">
-        <div id="top">
-          <div id="users-main"></div>
-          <div id="conversation-main">
-            {this.state.messages.map(message =>
-              <div>{message}</div>
-            )}
+        {this.state.init &&
+          <div id="init">
+            <form onSubmit={this.participantSubmit}>
+              <input type="text"
+                     placeholder="Enter name here..."
+                     id="participant-form" />
+            </form>
           </div>
-        </div>
-        <div id="bottom">
-          <div id="text-entry-main">
-            <div id="text-entry-form">
+        }
+        {!this.state.init &&
+          <div style={{width: "100%", height: "100%"}}>
+            <div id="top">
+              <div id="participants-main">
+                <b>{`Participants (${this.state.participants.length}):`}</b>
+                {this.state.participants.map(participant =>
+                  <div>{participant}</div>
+                )}
+              </div>
+              <div id="conversation-main">
+                {this.state.messages.map(message =>
+                  <Message message={message} />
+                )}
+              </div>
             </div>
-            <div onClick={this.buttonClick} id="text-entry-submit">
-              Send Message
+            <div id="bottom">
+              <div id="text-entry-main">
+                <div id="text-entry">
+                  <form onSubmit={this.textSubmit} id="text-entry-form">
+                    <input type="text" id="text-entry-input" />
+                  </form>
+                </div>
+                <div onClick={this.textSubmit} id="text-entry-submit">
+                  Send Message
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        }
       </div>
     );
   }

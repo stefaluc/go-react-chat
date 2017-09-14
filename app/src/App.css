@@ -4,6 +4,13 @@
   width: 75%;
   flex-direction: column;
   border-radius: 10px;
+  background-color: #FFF;
+}
+
+#init {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #top {
@@ -13,14 +20,19 @@
   flex-direction: row;
   border-radius-top: 10px;
 }
-#users-main {
+#participants-main {
   width: 20%;
   height: 100%;
+  height: calc(100% - 20px);
+  overflow: auto;
+  padding: 10px;
   background-color: #DDD;
 }
 #conversation-main {
   width: 80%;
-  height: 100%;
+  height: calc(100% - 20px);
+  overflow: auto;
+  padding: 10px;
   background-color: #FFF;
 }
 
@@ -38,8 +50,17 @@
   width: 100%;
   background-color: #CCC;
 }
-#text-entry-form {
+#text-entry {
   width: 80%;
+  height: 100%;
+  padding: 10px;
+}
+#text-entry-form {
+  width: calc(100% - 7px);
+  height: calc(100% - 28px);
+}
+#text-entry-input {
+  width: 100%;
   height: 100%;
 }
 #text-entry-submit {

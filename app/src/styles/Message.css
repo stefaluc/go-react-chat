@@ -1,0 +1,22 @@
+.message {
+  animation: fadein 0.5s;
+  margin-bottom: 5px;
+}
+@keyframes fadein {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.message-top {
+  display: flex;
+  flex-direction: row;
+}
+
+.client-name {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.timestamp {
+  color: #AAA;
+}

@@ -9,6 +9,7 @@ import (
 type JsonData struct {
 	Text string `json:"text"`
 	Client string `json:"client"`
+	Timestamp string `json:"timestamp"`
 }
 
 var upgrader = websocket.Upgrader{
