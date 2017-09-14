@@ -3,8 +3,9 @@
   height: 75%;
   width: 75%;
   flex-direction: column;
-  border-radius: 10px;
-  background-color: #FFF;
+  background-color: #F5F7F9;
+  border-left: 3px solid #69c;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
 }
 
 #init {
@@ -26,14 +27,25 @@
   height: calc(100% - 20px);
   overflow: auto;
   padding: 10px;
-  background-color: #DDD;
+  background-color: #EEE;
+  border-right: 1px solid #DDD;
+  border-top: 1px solid #DDD;
 }
 #conversation-main {
   width: 80%;
   height: calc(100% - 20px);
   overflow: auto;
   padding: 10px;
-  background-color: #FFF;
+  border-right: 1px solid #DDD;
+  border-top: 1px solid #DDD;
+  position: relative;
+}
+
+#source {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  opacity: 0.7;
 }
 
 #bottom {
@@ -48,27 +60,17 @@
   flex-direction: row;
   height: 100%;
   width: 100%;
-  background-color: #CCC;
-}
-#text-entry {
-  width: 80%;
-  height: 100%;
-  padding: 10px;
+  border-top: 1px solid #DDD;
+  border-bottom: 1px solid #DDD;
+  border-right: 1px solid #DDD;
+  background-color: #EEE;
 }
 #text-entry-form {
-  width: calc(100% - 7px);
-  height: calc(100% - 28px);
-}
-#text-entry-input {
   width: 100%;
   height: 100%;
 }
-#text-entry-submit {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20%;
-  height: 100%;
-  background-color: #FB4F4F;
-  cursor: pointer;
+#text-entry-input {
+  margin: 10px;
+  width: calc(100% - 25px);
+  height: calc(100% - 28px);
 }

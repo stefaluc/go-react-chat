@@ -20,7 +20,7 @@ var upgrader = websocket.Upgrader{
 }
 
 // handle /ws route, upgrade HTTP request and forward ws conn to worker
-func websocketHandler(w http.ResponseWriter, r *http.Request) {
+func wsHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		http.Error(w, "Could not open websocket connection", http.StatusBadRequest)
@@ -47,11 +47,4 @@ func handleConnection(conn *websocket.Conn) {
 			fmt.Println("Error writing JSON", err)
 		}
 	}
-}
-
-func main() {
-	fmt.Println("Launching server...")
-
-	http.HandleFunc("/ws", websocketHandler)
-	http.ListenAndServe(":8081", nil)
 }

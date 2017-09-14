@@ -12,7 +12,6 @@ socket.onerror = (event) => {
   console.log(event);
 }
 
-
 class App extends Component {
   constructor(props) {
     super(props);
@@ -60,6 +59,13 @@ class App extends Component {
     document.getElementById("text-entry-input").value = "";
   }
 
+  componentDidUpdate() {
+    // keep message box scrolled appropriately with new messages
+    if (!this.state.init) {
+      document.getElementById("conversation-main").scrollTop = document.getElementById("conversation-main").scrollHeight;
+    }
+  }
+
   componentDidMount() {
     socket.onmessage = (event) => {
       const { text, client, timestamp } = JSON.parse(event.data);
@@ -100,6 +106,10 @@ class App extends Component {
                 )}
               </div>
               <div id="conversation-main">
+                <a href="https://github.com/stefaluc/go-react-chat"
+                  id="source"
+                  target="_blank"
+                  rel="noopener noreferrer">View source code</a>
                 {this.state.messages.map(message =>
                   <Message message={message} />
                 )}
@@ -107,14 +117,9 @@ class App extends Component {
             </div>
             <div id="bottom">
               <div id="text-entry-main">
-                <div id="text-entry">
-                  <form onSubmit={this.textSubmit} id="text-entry-form">
-                    <input type="text" id="text-entry-input" />
-                  </form>
-                </div>
-                <div onClick={this.textSubmit} id="text-entry-submit">
-                  Send Message
-                </div>
+                <form onSubmit={this.textSubmit} id="text-entry-form">
+                  <input type="text" id="text-entry-input" />
+                </form>
               </div>
             </div>
           </div>

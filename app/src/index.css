@@ -5,6 +5,13 @@ body {
   height: 100vh;
   width: 100vw;
   background-color: #6CC0E5;
+  color: #555;
+}
+
+a {
+  color: #E81C4F;
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 #root {
