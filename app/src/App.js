@@ -6,6 +6,7 @@ import './App.css';
 const socket = new WebSocket("ws://127.0.0.1:8081/ws");
 socket.onopen = (event) => {
   console.log('Opened socket');
+  console.log(event);
 };
 
 socket.onerror = (event) => {
