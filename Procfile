@@ -1,1 +1,1 @@
-web: go run *.go
+web: go-react-chat

@@ -20,7 +20,9 @@ func main() {
 		wsHandler(hub, w, r)
 	})
 	// start server
-	err := http.ListenAndServe(os.Getenv("PORT"), nil)
+	port := ":" + os.Getenv("PORT")
+	fmt.Println(port)
+	err := http.ListenAndServe(port, nil)
 	if err != nil {
 		fmt.Println("ListenAndServeError:", err)
 	}
