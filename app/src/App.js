@@ -28,7 +28,7 @@ class App extends Component {
     }
 
     // init client websocket
-    socket = new WebSocket(`ws://127.0.0.1:8081/ws?name=${input}`);
+    socket = new WebSocket(`ws://${document.location.host}/ws?name=${input}`);
     socket.onopen = (event) => {
       console.log('Opened socket');
     };
