@@ -1,7 +1,7 @@
 package main
 
 type ConnHub struct {
-	clients map[*Client]bool
+	clients map[*Client]string
 	broadcast chan []byte
 	register chan *Client
 	unregister chan *Client
@@ -10,7 +10,7 @@ type ConnHub struct {
 // init ConnHub
 func newConnHub() *ConnHub {
 	return &ConnHub{
-		clients: make(map[*Client]bool),
+		clients: make(map[*Client]string),
 		broadcast: make(chan []byte),
 		register: make(chan *Client),
 		unregister: make(chan *Client),
@@ -23,7 +23,7 @@ func (hub *ConnHub) run() {
 		select {
 		// register client to hub
 		case client := <-hub.register:
-			hub.clients[client] = true
+			hub.clients[client] = client.name
 		// unregister client to hub
 		case client := <-hub.unregister:
 			if _, ok := hub.clients[client]; ok {

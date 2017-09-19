@@ -3,15 +3,7 @@ import React, { Component } from 'react';
 import Message from './components/Message';
 import './App.css';
 
-const socket = new WebSocket("ws://127.0.0.1:8081/ws");
-socket.onopen = (event) => {
-  console.log('Opened socket');
-  console.log(event);
-};
-
-socket.onerror = (event) => {
-  console.log(event);
-}
+let socket = null;
 
 class App extends Component {
   constructor(props) {
@@ -30,18 +22,24 @@ class App extends Component {
   participantSubmit(e) {
     e.preventDefault();
     const input = document.getElementById("participant-form").value;
-    console.log(input);
     if (input === "") {
       return;
     }
-
-    this.setState({
-      init: false,
-      participants: [
-        ...this.state.participants,
-        input,
-      ]
-    });
+    socket = new WebSocket(`ws://127.0.0.1:8081/ws?name=${input}`);
+    socket.onopen = (event) => {
+      console.log('Opened socket');
+      console.log(event);
+    };
+    socket.onerror = (event) => {
+      console.log(event);
+    }
+    socket.onmessage = (event) => {
+      const names = JSON.parse(event.data);
+      this.setState({
+        init: false,
+        participants: names,
+      });
+    }
   }
 
   textSubmit(e) {
@@ -68,19 +66,21 @@ class App extends Component {
   }
 
   componentDidMount() {
-    socket.onmessage = (event) => {
-      const { text, client, timestamp } = JSON.parse(event.data);
+    if (!this.state.init) {
+      socket.onmessage = (event) => {
+        const { text, client, timestamp } = JSON.parse(event.data);
 
-      this.setState({
-        messages: [
-          ...this.state.messages,
-          {
-            text,
-            client,
-            timestamp,
-          }
-        ],
-      });
+        this.setState({
+          messages: [
+            ...this.state.messages,
+            {
+              text,
+              client,
+              timestamp,
+            }
+          ],
+        });
+      }
     }
   }
 

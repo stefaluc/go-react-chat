@@ -1,9 +1,10 @@
 package main
 
 import (
-	// "fmt"
+	"fmt"
 	"net/http"
 	"time"
+	"encoding/json"
 
 	"github.com/gorilla/websocket"
 )
@@ -27,12 +28,14 @@ var upgrader = websocket.Upgrader{
 }
 
 type JsonData struct {
+	Name string `json:"name"`
 	Text string `json:"text"`
 	Client string `json:"client"`
 	Timestamp string `json:"timestamp"`
 }
 
 type Client struct {
+	name string
 	hub *ConnHub
 	conn *websocket.Conn
 	send chan []byte
@@ -56,14 +59,15 @@ func (c *Client) readPump() {
 	// handle connection read
 	for {
 		// read JSON data from connection
-		// message := JsonData{}
-		// if err := c.conn.ReadJSON(&message); err != nil {
-		// 	fmt.Println("Error reading JSON", err)
-		// }
-		// fmt.Printf("Get response: %#v\n", message)
+		message := JsonData{}
+		if err := c.conn.ReadJSON(&message); err != nil {
+			fmt.Println("Error reading JSON", err)
+		}
+		fmt.Printf("Get response: %#v\n", message)
 
-		// // queue message for writing
-		// c.hub.broadcast <- message
+		messageJson, _ := json.Marshal(message)
+		// queue message for writing
+		c.hub.broadcast <- messageJson
 	}
 }
 
@@ -117,14 +121,26 @@ func wsHandler(hub *ConnHub, w http.ResponseWriter, r *http.Request) {
 	}
 
 	// init new client, register to hub
+	name := r.URL.Query().Get("name")
 	client := &Client{
+		name: name, // sent in http query params
 		hub: hub,
 		conn: conn,
 		send: make(chan []byte, 256),
 	}
 	client.hub.register <- client
 
+	// construct JSON list of connected client names and send to new client for display
+	names := make([]string, len(client.hub.clients) + 1)
+	i := 0
+	for k := range client.hub.clients {
+		names[i] = client.hub.clients[k]
+		i++
+	}
+	names[i] = name
+	client.conn.WriteJSON(names)
+
 	// separate reads and writes to conform to WebSocket standard of one concurrent reader and writer
-	// go client.writePump()
-	// go client.readPump()
+	go client.writePump()
+	go client.readPump()
 }
