@@ -28,7 +28,7 @@ class App extends Component {
     }
 
     // init client websocket
-    socket = new WebSocket(`ws://${document.location.host}/ws?name=${input}`);
+    socket = new WebSocket(`${document.location.protocol.replace("http", "ws")}//${document.location.host}/ws?name=${input}`);
     socket.onopen = (event) => {
       console.log('Opened socket');
     };
