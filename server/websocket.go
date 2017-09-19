@@ -30,7 +30,6 @@ var upgrader = websocket.Upgrader{
 type JsonData struct {
 	Name string `json:"name"`
 	Text string `json:"text"`
-	Client string `json:"client"`
 	Timestamp string `json:"timestamp"`
 }
 
@@ -58,6 +57,7 @@ func (c *Client) readPump() {
 
 	// handle connection read
 	for {
+		fmt.Println("reading from client")
 		// read JSON data from connection
 		message := JsonData{}
 		if err := c.conn.ReadJSON(&message); err != nil {
@@ -84,7 +84,7 @@ func (c *Client) writePump() {
 			c.conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				// channel has been closed by the hub
-				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				// c.conn.WriteMessage(websocket.CloseMessage, []byte{})
 				return
 			}
 
@@ -138,7 +138,8 @@ func wsHandler(hub *ConnHub, w http.ResponseWriter, r *http.Request) {
 		i++
 	}
 	names[i] = name
-	client.conn.WriteJSON(names)
+	namesJson, _ := json.Marshal(names)
+	client.hub.broadcast <- namesJson
 
 	// separate reads and writes to conform to WebSocket standard of one concurrent reader and writer
 	go client.writePump()

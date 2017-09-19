@@ -13,6 +13,7 @@ class App extends Component {
       init: true,
       participants: [],
       messages: [],
+      name: "",
     };
 
     this.participantSubmit = this.participantSubmit.bind(this);
@@ -25,21 +26,20 @@ class App extends Component {
     if (input === "") {
       return;
     }
+
+    // init client websocket
     socket = new WebSocket(`ws://127.0.0.1:8081/ws?name=${input}`);
     socket.onopen = (event) => {
       console.log('Opened socket');
-      console.log(event);
     };
     socket.onerror = (event) => {
       console.log(event);
     }
-    socket.onmessage = (event) => {
-      const names = JSON.parse(event.data);
-      this.setState({
-        init: false,
-        participants: names,
-      });
-    }
+    this.setState({
+      init: false,
+      name: input,
+      participants: [],
+    });
   }
 
   textSubmit(e) {
@@ -49,9 +49,10 @@ class App extends Component {
       return;
     }
 
+    // send message request to server
     socket.send(JSON.stringify({
       text: input,
-      client: "testClient",
+      name: this.state.name,
       timestamp: new Date().toLocaleTimeString(),
     }));
 
@@ -62,24 +63,30 @@ class App extends Component {
     // keep message box scrolled appropriately with new messages
     if (!this.state.init) {
       document.getElementById("conversation-main").scrollTop = document.getElementById("conversation-main").scrollHeight;
-    }
-  }
 
-  componentDidMount() {
-    if (!this.state.init) {
+      console.log("componentDidUpdate")
       socket.onmessage = (event) => {
-        const { text, client, timestamp } = JSON.parse(event.data);
+        console.log(event);
+        const data = JSON.parse(event.data);
+        console.log(data);
+        if (!data.text) { // client added
+          this.setState({
+            participants: data
+          });
+        } else { // message added
+          const { text, name, timestamp } = data;
 
-        this.setState({
-          messages: [
-            ...this.state.messages,
-            {
-              text,
-              client,
-              timestamp,
-            }
-          ],
-        });
+          this.setState({
+            messages: [
+              ...this.state.messages,
+              {
+                text,
+                name,
+                timestamp,
+              }
+            ],
+          });
+        }
       }
     }
   }
