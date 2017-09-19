@@ -3,6 +3,7 @@ package main
 import (
 	"net/http"
 	"fmt"
+	"os"
 )
 
 func main() {
@@ -19,7 +20,7 @@ func main() {
 		wsHandler(hub, w, r)
 	})
 	// start server
-	err := http.ListenAndServe(":8081", nil)
+	err := http.ListenAndServe(os.Getenv("PORT"), nil)
 	if err != nil {
 		fmt.Println("ListenAndServeError:", err)
 	}
