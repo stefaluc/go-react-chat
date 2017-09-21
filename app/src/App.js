@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 
 import Message from './components/Message';
+import Login from './components/Login';
 import './App.css';
 
 let socket = null;
+const isDevelopment = process.env.NODE_ENV === 'development'
 
 class App extends Component {
   constructor(props) {
@@ -27,8 +29,10 @@ class App extends Component {
       return;
     }
 
+    const location = isDevelopment ? 'localhost:8081' : document.location.host;
+    const url = `${document.location.protocol.replace("http", "ws")}//${location}/ws?name=${input}`;
     // init client websocket
-    socket = new WebSocket(`${document.location.protocol.replace("http", "ws")}//${document.location.host}/ws?name=${input}`);
+    socket = new WebSocket(url);
     socket.onopen = (event) => {
       console.log('Opened socket');
     };
@@ -96,13 +100,7 @@ class App extends Component {
     return (
       <div id="box-main">
         {this.state.init &&
-          <div id="init">
-            <form onSubmit={this.participantSubmit}>
-              <input type="text"
-                     placeholder="Enter name here..."
-                     id="participant-form" />
-            </form>
-          </div>
+          <Login participantSubmit={this.participantSubmit} />
         }
         {!this.state.init &&
           <div style={{width: "100%", height: "100%"}}>

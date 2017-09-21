@@ -20,8 +20,13 @@ func main() {
 		wsHandler(hub, w, r)
 	})
 	// start server
-	port := ":" + os.Getenv("PORT")
-	fmt.Println(port)
+	var port string
+	if os.Getenv("GO_ENV") == "PRODUCTION" {
+		// let heroku set port in production
+		port = ":" + os.Getenv("PORT")
+	} else {
+		port = ":8081"
+	}
 	err := http.ListenAndServe(port, nil)
 	if err != nil {
 		fmt.Println("ListenAndServeError:", err)
