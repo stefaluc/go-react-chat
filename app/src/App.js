@@ -64,8 +64,8 @@ class App extends Component {
   }
 
   componentDidUpdate() {
-    // keep message box scrolled appropriately with new messages
     if (!this.state.init) {
+      // keep message box scrolled appropriately with new messages
       document.getElementById("conversation-main").scrollTop = document.getElementById("conversation-main").scrollHeight;
 
       console.log("componentDidUpdate")
@@ -96,41 +96,47 @@ class App extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
-      <div id="box-main">
-        {this.state.init &&
-          <Login participantSubmit={this.participantSubmit} />
-        }
-        {!this.state.init &&
-          <div style={{width: "100%", height: "100%"}}>
-            <div id="top">
-              <div id="participants-main">
-                <b>{`Participants (${this.state.participants.length}):`}</b>
-                {this.state.participants.map(participant =>
-                  <div>{participant}</div>
-                )}
-              </div>
-              <div id="conversation-main">
-                <a href="https://github.com/stefaluc/go-react-chat"
-                  id="source"
-                  target="_blank"
-                  rel="noopener noreferrer">View source code</a>
-                {this.state.messages.map(message =>
-                  <Message message={message} />
-                )}
-              </div>
+        <div id="main">
+          <div id="title">
+            go-react-chat
+          </div>
+          {this.state.init &&
+            <div id="box-init">
+              <Login participantSubmit={this.participantSubmit} />
             </div>
-            <div id="bottom">
-              <div id="text-entry-main">
-                <form onSubmit={this.textSubmit} id="text-entry-form">
-                  <input type="text" id="text-entry-input" />
-                </form>
+          }
+          {!this.state.init &&
+          <div id="box-main">
+            <div style={{width: "100%", height: "100%"}}>
+              <div id="top">
+                <div id="participants-main">
+                  <b>{`Participants (${this.state.participants.length}):`}</b>
+                  {this.state.participants.map(participant =>
+                    <div>{participant}</div>
+                  )}
+                </div>
+                <div id="conversation-main">
+                  <a href="https://github.com/stefaluc/go-react-chat"
+                    id="source"
+                    target="_blank"
+                    rel="noopener noreferrer">View source code</a>
+                  {this.state.messages.map(message =>
+                    <Message message={message} />
+                  )}
+                </div>
+              </div>
+              <div id="bottom">
+                <div id="text-entry-main">
+                  <form onSubmit={this.textSubmit} id="text-entry-form">
+                    <input type="text" id="text-entry-input" />
+                  </form>
+                </div>
               </div>
             </div>
           </div>
-        }
-      </div>
+          }
+        </div>
     );
   }
 }

@@ -12,7 +12,7 @@ func main() {
 	// start conn_hub
 	hub := newConnHub()
 	go hub.run()
-	// serve create-react-app-bundle
+	// serve create-react-app bundle
 	fs := http.FileServer(http.Dir("./app/build"))
 	http.Handle("/", fs)
 	// serve websocket route
@@ -21,8 +21,8 @@ func main() {
 	})
 	// start server
 	var port string
+	// let heroku set port in production
 	if os.Getenv("GO_ENV") == "PRODUCTION" {
-		// let heroku set port in production
 		port = ":" + os.Getenv("PORT")
 	} else {
 		port = ":8081"
